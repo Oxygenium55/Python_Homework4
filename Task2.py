@@ -3,50 +3,89 @@
 # НЕОБЯЗАТЕЛЬНОЕ, ДОПОЛНИТЕЛЬНОЕ ЗАДАНИЕ:
 # Расширить значение коэффициентов до [-100..100]
 
-with open('eq_1.txt', 'w') as file:
-    file.write('5*x**5 + 4*x**4 + 3*x**3 + 2*x**2 + x = 0')
+# with open('eq_1.txt', 'w') as file:
+#     file.write('5*x**4 + 4*x**3 + 3*x**2 + 2*x**1 + 1 = 0')
 
-with open('eq_2.txt', 'w') as file:
-    file.write('x**4 + 2*x**3 + 3*x**2 + 4*x + 5 = 0')
+# with open('eq_2.txt', 'w') as file:
+#     file.write('1*x**4 + 2*x**3 + 3*x**2 + 4*x**1 + 5 = 0')
 
-file1 = 'eq_1.txt'
-file2 = 'eq_2.txt'
 
-def read_pol(file):
-    with open(str(file), 'r') as data:
-        pol = data.read()
-    return pol
+def create_list(str):
+    str = str.replace(' = 0', '').replace('x', ' ').replace('*', '').replace('**', '').replace(' +', '').split(' ')
+    return str
 
-def convert_pol(pol):  # удалили "хвостик" и порезали" строку на массив , разделитель знак " + "
-    pol.replace('= 0', '')
-    pol = pol.split(' + ')
-    pol = {i: pol[i] for i in range(len(pol))}
-    # for i in range(len(pol)):
-    #     if pol[i] == 'x':
-    #         pol[i] = '1'
-    #pol = pol[::-1]
-    return pol
+def create_file(str):
+    with open('summ_equation.txt', 'w') as data:
+        data.write(str)
+    print('summ_equation.txt created')
+
+def create_dict(list, dict):
+    for i in range(len(list)):
+        if i % 2 != 0:
+            list += "0"
+        if i % 2 == 0:
+            dict.update({int(list[i+1]): int(list[i])})
+    return dict
+
+def find_summ(dict1, dict2):
+    for keys, values in dict1.items():
+        for k, v in dict2.items():
+            if keys == k:
+                summ.update({k: values + v})
+    return summ
+
+def summ_eq(equation):
+    eq_str = ''
+    for k,v in equation.items():
+        if k == 1:
+            if v == 0:
+                eq_str += f''
+            elif v == 1:
+                eq_str += f'x + '
+            else:
+                eq_str += f'{v}*x + '
+        elif k == 0:
+            if v == 0:
+                eq_str += f''
+            else:
+                eq_str += f'{v} + '
+        else:
+            if v == 0:
+                eq_str += f''
+            elif v == 1:
+                eq_str += f'x**{k} + '
+            else:
+                eq_str += f'{v}*x**{k} + '
+    if eq_str.endswith('+ '):
+        eq_str = eq_str.rstrip('+ ')
+    eq_str += f' = 0'
+    return eq_str
+
+with open('eq_1.txt', 'r') as data:
+    str1 = data.readline()
+with open('eq_2.txt', 'r') as data:
+    str2 = data.readline()
+print(f"Первый многочлен: {str1}")
+print(f"Второй многочлен: {str2}")
+
+list1 = create_list(str1)
+list2 = create_list(str2)
+#print(list1)
+#print(list2)
 
 dict1 = {}
 dict2 = {}
-pol1 = read_pol(file1)
-pol2 = read_pol(file2)
-print('Исходные многочлены:')
-print(pol1)
-print(pol2)
-print('_'*30)
-print(convert_pol(pol1))
-print(convert_pol(pol2))
-# pol1_coef = list(map(int, convert_pol(pol1)))
-# pol2_coef = list(map(int, convert_pol(pol2)))
-# print(pol1_coef)
-# print(pol2_coef)
-# print('_'*30)
+print(create_dict(list1, dict1))
+print(create_dict(list2, dict2))
+print('-'*30)
+summ = {}
+summ = find_summ(dict1, dict2)
+print(summ)
+eq_str = summ_eq(summ)
+print(eq_str)
+create_file(f'{str1}\n + \n{str2}\n = \n{eq_str}')
 
 
 
 
 
-
-# with open('task034.txt', 'w') as file_sum:
-#     file_sum.writelines(sum_pol)
